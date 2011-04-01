@@ -4,6 +4,8 @@
 
 Calendrical is a plugin for jQuery that provides popup date and time pickers inspired by Google Calender.
 
+The time picker component allows the time separator to be omitted when entering the time via the keyboard, which allows for quicker data entry. The time separator will be automatically included when tabbing away from the time picker. For example entering '1300' will be converted to either '1:00pm' or '13:00' (depending on whether or not the `isoTime` option is set).
+
 ## Installation
 
 Copy and include the JavaScript file `jquery.calendrical.js`, and the style sheet `calendrical.css` in your project.
@@ -33,3 +35,4 @@ Available options:
   * __defaultHour__ - Default hour to scroll the dropdown time select box to,
   if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.
   * __minuteIncrement__ - Specify the minute increment for the time picker. Defaults to 30.
+  * __timeSeparator__ - Specify the character used to separate the hour and minute components of the time. Valid options are ':', '-', '.' or ','. Defaults to ':'.

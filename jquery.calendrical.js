@@ -80,7 +80,7 @@
         return new Date(a.join('/'));
     }
     
-    function formatTime(hour, minute, iso)
+    function formatTime(hour, minute, iso, timeSeparator)
     {
         var printMinute = minute;
         if (minute < 10) printMinute = '0' + minute;
@@ -88,26 +88,35 @@
         if (iso) {
             var printHour = hour
             if (printHour < 10) printHour = '0' + hour;
-            return printHour + ':' + printMinute;
+            return printHour + timeSeparator + printMinute;
         } else {
             var printHour = hour % 12;
             if (printHour == 0) printHour = 12;
             var half = (hour < 12) ? 'am' : 'pm';
-            return printHour + ':' + printMinute + half;
+            return printHour + timeSeparator + printMinute + half;
         }
     }
     
-    function parseTime(text)
+    function parseTime(text, timeSeparator)
     {
-        var match = match = /(\d+)\s*[:\-\.,]\s*(\d+)\s*(am|pm)?/i.exec(text);
+        var match = /((?:[2][0-3]|[0-1]?[0-9]){1,2})([:\-\.,]?)([0-6][0-9])(am|pm)?/i.exec(text);
         if (match && match.length >= 3) {
             var hour = Number(match[1]);
-            var minute = Number(match[2])
-            if (hour == 12 && match[3]) hour -= 12;
-            if (match[3] && match[3].toLowerCase() == 'pm') hour += 12;
+            var minute = Number(match[3]);
+            
+            if (hour > 24 || minute >= 60)
+            {
+              return null;
+            }
+            
+            var separator = match[2];
+            if (separator == null) separator = timeSeparator;
+            if (hour == 12 && match[4]) hour -= 12;
+            if (match[4] && match[4].toLowerCase() == 'pm' && hour < 12) hour += 12;
             return {
-                hour:   hour,
-                minute: minute
+                hour: hour,
+                minute: minute,
+                separator: separator
             };
         } else {
             return null;
@@ -233,7 +242,7 @@
     
     function renderTimeSelect(element, options)
     {
-        var selection = options.selection && parseTime(options.selection);
+        var selection = options.selection && parseTime(options.selection, options.timeSeparator);
         if (selection) {
             selection.minute = Math.floor(selection.minute / parseFloat(options.minuteIncrement)) * options.minuteIncrement;
         }
@@ -247,7 +256,7 @@
                 if (startTime && startTime > (hour * 60 + minute)) continue;
                 
                 (function() {
-                    var timeText = formatTime(hour, minute, options.isoTime);
+                    var timeText = formatTime(hour, minute, options.isoTime, options.timeSeparator);
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = (hour * 60 + minute) - startTime;
@@ -393,6 +402,20 @@
     {
         options = options || {};
         options.padding = options.padding || 4;
+        options.isoTime = options.isoTime || false;
+        
+        var separator = ':';
+        
+        if (options.timeSeparator != null)
+        {
+          var match = /[:\-\.,]/.exec(options.timeSeparator);
+          if (match && match.length == 1)
+          {
+            separator = match[0];
+          }
+        }
+        
+        options.timeSeparator = separator;
         
         var minuteIncrement = 30;
         
@@ -451,18 +474,21 @@
                         div.remove();
                         div = null;
                     },
-                    isoTime: options.isoTime || false,
+                    isoTime: options.isoTime,
                     defaultHour: (options.defaultHour != null) ?
                                     options.defaultHour : 8,
-                    minuteIncrement: options.minuteIncrement
+                    minuteIncrement: options.minuteIncrement,
+                    timeSeparator: options.timeSeparator
                 };
                 
                 if (useStartTime) {
-                    opts.startTime = parseTime(options.startTime.val());
+                    opts.startTime = parseTime(options.startTime.val(),options.timeSeparator);
                 }
                 
                 renderTimeSelect(div, opts);
             }).blur(function() {
+                var parsedTime = parseTime(this.value);
+                if (parsedTime) this.value = formatTime(parsedTime.hour,parsedTime.minute,options.isoTime,options.timeSeparator);
                 if (within){
                     if (div) element.focus();
                     return;

@@ -183,6 +183,37 @@ $(<font color="#008000">'#time_start, #time_end'</font>)
     .calendricalDateTimeRange()<font color="4444FF">;</font></pre>
                             </div>
                         </section>
+                        
+            <section>
+                <header>
+                    <h2>Configurable Minute Increment</h2>
+                </header>
+                
+                <div class="demo">
+                    <p>
+                        <input id="configureMinutes" type="text" />
+                    </p>
+                    <script>
+                        $(function() {
+                            $('#configureMinutes').calendricalTime({
+                              minuteIncrement: 10
+                            });
+                        });
+                    </script>
+                </div>
+                
+                <div class="html">
+                    <pre>
+<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"configureMinutes"</font> <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font></pre>
+                </div>
+                
+                <div class="javascript">
+                    <pre>
+$(<font color="#008000">'#configureMinutes'</font>).calendricalTime({
+    minuteIncrement: 10
+  })<font color="4444FF">;</font></pre>
+                </div>
+            </section>
         </div>
     </body>
 </html>

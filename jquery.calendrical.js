@@ -235,7 +235,7 @@
     {
         var selection = options.selection && parseTime(options.selection);
         if (selection) {
-            selection.minute = Math.floor(selection.minute / 30.0) * 30;
+            selection.minute = Math.floor(selection.minute / parseFloat(options.minuteIncrement)) * options.minuteIncrement;
         }
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
@@ -243,7 +243,7 @@
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
-            for (var minute = 0; minute < 60; minute += 30) {
+            for (var minute = 0; minute < 60; minute += options.minuteIncrement) {
                 if (startTime && startTime > (hour * 60 + minute)) continue;
                 
                 (function() {
@@ -394,6 +394,19 @@
         options = options || {};
         options.padding = options.padding || 4;
         
+        var minuteIncrement = 30;
+        
+        if (options.minuteIncrement != null && !isNaN(options.minuteIncrement))
+        {
+          minuteIncrement = parseInt(options.minuteIncrement);
+          if (minuteIncrement <= 0 || minuteIncrement > 60)
+          {
+            minuteIncrement = 30;
+          }
+        }
+        
+        options.minuteIncrement = minuteIncrement;
+        
         return this.each(function() {
             var element = $(this);
             var div;
@@ -440,7 +453,8 @@
                     },
                     isoTime: options.isoTime || false,
                     defaultHour: (options.defaultHour != null) ?
-                                    options.defaultHour : 8
+                                    options.defaultHour : 8,
+                    minuteIncrement: options.minuteIncrement
                 };
                 
                 if (useStartTime) {

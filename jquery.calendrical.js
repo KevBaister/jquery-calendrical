@@ -260,12 +260,20 @@
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = (hour * 60 + minute) - startTime;
-                        if (duration < 60) {
-                            fullText += ' (' + duration + ' mins)';
-                        } else if (duration == 60) {
-                            fullText += ' (1 hr)';
+                        
+                        var hourDuration = Math.floor(duration/60);
+                        var minuteDuration = parseInt(duration % 60);
+                        
+                        if (hourDuration == 0) {
+                            fullText += ' (' + minuteDuration + ' mins)';
+                        } else if (minuteDuration == 0) {
+                            if (hourDuration == 1){
+                              fullText += ' (1 hr)';
+                            } else {
+                              fullText += ' (' + hourDuration + ' hrs)';
+                            }
                         } else {
-                            fullText += ' (' + (duration / 60.0) + ' hrs)';
+                            fullText += ' (' + hourDuration + ' hrs ' + minuteDuration + ' mins)';
                         }
                     }
                     var li = $('<li />').append(

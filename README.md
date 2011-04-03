@@ -35,4 +35,7 @@ Available options:
   * __defaultHour__ - Default hour to scroll the dropdown time select box to,
   if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.
   * __minuteIncrement__ - Specify the minute increment for the time picker. Defaults to 30.
-  * __timeSeparator__ - Specify the character used to separate the hour and minute components of the time. Valid options are ':', '-', '.' or ','. Defaults to ':'.
+  * __timeSeparator__ - Specify the character used to separate the hour and minute components of the time. Valid options are `:`, `-`, `.` or `,`. Defaults to `:`.
+  * __minimumTime__ - Specify the earliest time displayed in the time picker. Defaults to `{ hour: 0, minute: 0 }`.
+  * __maximumTime__ - Specify the latest time displayed in the time picker. Defaults to `{ hour: 24, minute: 0}`.
+  * __matchContainerWidth__ - If set to `true` then the width of the time picker drop down will match the width of the textbox that the time picker has been applied to. Defaults to `false`.

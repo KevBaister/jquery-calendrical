@@ -251,15 +251,22 @@
         
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
-        for (var hour = 0; hour < 24; hour++) {
-            for (var minute = 0; minute < 60; minute += options.minuteIncrement) {
-                if (startTime && startTime > (hour * 60 + minute)) continue;
+        for (var hour = options.minimumTime.hour; hour <= options.maximumTime.hour; hour++) {
+            for (var minute = options.minimumTime.minute; minute < 60; minute += options.minuteIncrement) {
+                
+                if (hour >= options.maximumTime.hour && minute > options.maximumTime.minute) break;
+                if (hour >= 24) break;
+                
+                var hourValue = hour;
+                var minuteValue = minute;
+                
+                if (startTime && startTime > (hourValue * 60 + minuteValue)) continue;
                 
                 (function() {
-                    var timeText = formatTime(hour, minute, options.isoTime, options.timeSeparator);
+                    var timeText = formatTime(hourValue, minuteValue, options.isoTime, options.timeSeparator);
                     var fullText = timeText;
                     if (startTime != null) {
-                        var duration = (hour * 60 + minute) - startTime;
+                        var duration = (hourValue * 60 + minuteValue) - startTime;
                         
                         var hourDuration = Math.floor(duration/60);
                         var minuteDuration = parseInt(duration % 60);
@@ -288,13 +295,13 @@
                     ).appendTo(ul);
                     
                     //Set to scroll to the default hour, unless already set
-                    if (!scrollTo && hour == options.defaultHour) {
+                    if (!scrollTo && hourValue == options.defaultHour) {
                         scrollTo = li;
                     }
                     
                     if (selection &&
-                        selection.hour == hour &&
-                        selection.minute == minute)
+                        selection.hour == hourValue &&
+                        selection.minute == minuteValue)
                     {
                         //Highlight selected item
                         li.addClass('selected');
@@ -409,8 +416,9 @@
     $.fn.calendricalTime = function(options)
     {
         options = options || {};
-        options.padding = options.padding || 4;
+        options.padding = options.padding || 1;
         options.isoTime = options.isoTime || false;
+        options.matchContainerWidth = options.matchContainerWidth;
         
         var separator = ':';
         
@@ -465,9 +473,15 @@
                     .css({
                         position: 'absolute',
                         left: offset.left,
-                        top: offset.top + element.height() +
+                        top: offset.top + $(this).outerHeight() +
                             options.padding * 2
                     });
+                
+                if (options.matchContainerWidth)
+                {
+                  $(div).css({ width: $(this).outerWidth() });
+                }
+                
                 if (useStartTime) {
                     div.addClass('calendricalEndTimePopup');
                 }
@@ -486,7 +500,9 @@
                     defaultHour: (options.defaultHour != null) ?
                                     options.defaultHour : 8,
                     minuteIncrement: options.minuteIncrement,
-                    timeSeparator: options.timeSeparator
+                    timeSeparator: options.timeSeparator,
+                    minimumTime: (options.minimumTime != null) ? options.minimumTime : { hour: 0, minute: 0 },
+                    maximumTime: (options.maximumTime != null) ? options.maximumTime : { hour: 24, minute: 0 }
                 };
                 
                 if (useStartTime) {

@@ -279,6 +279,42 @@ $(<font color="#008000">'#minMaxTime'</font>).calendricalTime({
   })<font color="4444FF">;</font></pre>
                 </div>
             </section>
+            <section>
+                <header>
+                    <h2>Can Span Midnight</h2>
+                </header>
+                
+                <div class="demo">
+                    <p>
+                        <input id="spanMidnight" type="text" />
+                    </p>
+                    <script>
+                        $(function() {
+                            $('#spanMidnight').calendricalTime({
+                              minimumTime: { hour: 19, minute: 30 },
+                              maximumTime: { hour: 7, minute: 0},
+                              minuteIncrement: 10,
+                              canSpanMidnight: true
+                            });
+                        });
+                    </script>
+                </div>
+                
+                <div class="html">
+                    <pre>
+<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"spanMidnight"</font> <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font></pre>
+                </div>
+                
+                <div class="javascript">
+                    <pre>
+$(<font color="#008000">'#spanMidnight'</font>).calendricalTime({
+    minimumTime: { hour: 19, minute: 30 },
+    maximumTime: { hour: 7, minute: 0},
+    minuteIncrement: 10,
+    canSpanMidnight: true
+  });<font color="4444FF">;</font></pre>
+                </div>
+            </section>
         </div>
     </body>
 </html>

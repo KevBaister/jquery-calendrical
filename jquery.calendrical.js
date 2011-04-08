@@ -249,18 +249,30 @@
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
         
+        var hourLimit;
+        
+        if (!options.spanMidnight) {
+          if (options.maximumTime.hour > options.minimumTime.hour) {
+            hourLimit = options.maximumTime.hour - options.minimumTime.hour;
+          } else {
+            hourLimit = (24 - options.minimumTime.hour);
+          }
+        } else {
+          hourLimit = (24 - options.minimumTime.hour) + options.maximumTime.hour;
+        }
+        
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
-        for (var hour = options.minimumTime.hour; hour <= options.maximumTime.hour; hour++) {
-            for (var minute = options.minimumTime.minute; minute < 60; minute += options.minuteIncrement) {
+        var hour = options.minimumTime.hour;
+        for (var i = 0; i <= hourLimit; i++) {
+            for (var minute = 0; minute < 60; minute += options.minuteIncrement) {
                 
-                if (hour >= options.maximumTime.hour && minute > options.maximumTime.minute) break;
-                if (hour >= 24) break;
+                if (i == 0 && minute < options.minimumTime.minute) continue;
+                if (i == hourLimit && minute > options.maximumTime.minute) break;
+                if (hour >= 24) hour = hour - 24;
                 
                 var hourValue = hour;
                 var minuteValue = minute;
-                
-                if (startTime && startTime > (hourValue * 60 + minuteValue)) continue;
                 
                 (function() {
                     var timeText = formatTime(hourValue, minuteValue, options.isoTime, options.timeSeparator);
@@ -315,6 +327,7 @@
                     }
                 })();
             }
+          hour++;
         }
         if (scrollTo) {
             //Set timeout of zero so code runs immediately after any calling
@@ -418,6 +431,7 @@
         options = options || {};
         options.padding = options.padding || 1;
         options.isoTime = options.isoTime || false;
+        options.canSpanMidnight = options.canSpanMidnight || false;
         options.matchContainerWidth = options.matchContainerWidth;
         
         var separator = ':';
@@ -502,8 +516,10 @@
                     minuteIncrement: options.minuteIncrement,
                     timeSeparator: options.timeSeparator,
                     minimumTime: (options.minimumTime != null) ? options.minimumTime : { hour: 0, minute: 0 },
-                    maximumTime: (options.maximumTime != null) ? options.maximumTime : { hour: 24, minute: 0 }
+                    maximumTime: (options.maximumTime != null) ? options.maximumTime : { hour: 24, minute: 0 },
+                    spanMidnight: options.canSpanMidnight
                 };
+                opts.spanMidnight = opts.spanMidnight && (opts.maximumTime.hour <= opts.minimumTime.hour);
                 
                 if (useStartTime) {
                     opts.startTime = parseTime(options.startTime.val(),options.timeSeparator);

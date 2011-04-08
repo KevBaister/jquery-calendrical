@@ -39,3 +39,4 @@ Available options:
   * __minimumTime__ - Specify the earliest time displayed in the time picker. Defaults to `{ hour: 0, minute: 0 }`.
   * __maximumTime__ - Specify the latest time displayed in the time picker. Defaults to `{ hour: 24, minute: 0}`.
   * __matchContainerWidth__ - If set to `true` then the width of the time picker drop down will match the width of the textbox that the time picker has been applied to. Defaults to `false`.
+  * __canSpanMidnight__ - Specifies whether or not the time picker can span midnight if the combination of minimum and maximum times cross midnight. Defauls to `false`.
